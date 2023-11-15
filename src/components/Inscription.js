@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
 
 export default function Inscription() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [nom, setNom] = useState('');
 
-  const handleLogin = () => {
-    
+  const [donneesUtili, setDonneesUtili] = useState({
+    nom:null,
+    email:null,
+    mdp:null
+});
+
+   //ajout utili
+  const handleLogin = async () => {
+    try {
+      console.log(donneesUtili)
+    const reponse = await fetch(`http://localhost:3008/utilisateurs`, 
+    {method: "POST", headers:{'Content-Type':'application/json'} ,body: JSON.stringify(donneesUtili)})
+      if(reponse.status === 200){
+        window.location.reload();
+      }
+    }
+    catch(error){
+      console.error(error);
+    }
   };
 
   return (
@@ -18,24 +32,21 @@ export default function Inscription() {
       <label>Nom: 
           <input
             type="text"
-            // value={nom}
-            // onChange={(e) => setNom(e.target.value)}
+            onChange={(e) => setDonneesUtili({...donneesUtili,nom:e.target.value})}
           />
         </label>
         <br/>
         <label>Email: 
           <input
             type="email"
-            // value={email}
-            // onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setDonneesUtili({...donneesUtili,email:e.target.value})}
           />
         </label>
         <br/>
         <label>Mot de passe:
           <input
             type="password"
-            // value={password}
-            // onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setDonneesUtili({...donneesUtili,mdp:e.target.value})}
           />
         </label>
         <br/>

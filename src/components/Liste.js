@@ -31,9 +31,9 @@ export default function Liste() {
     try {
       console.log(donnees)
     const reponse = await fetch(`http://localhost:3008/article`, 
-    {method: "POST" ,body: JSON.stringify(donnees)})
+    {method: "POST", headers:{'Content-Type':'application/json'} ,body: JSON.stringify(donnees)})
       if(reponse.status === 200){
-        // window.location.reload();
+        window.location.reload();
       }
     }
     catch(error){
@@ -48,7 +48,7 @@ const deleted = async (titre)=>{
       {method: "DELETE"})
         if(reponse.status === 200){
           console.log(titre);
-          //window.location.reload();
+          window.location.reload();
         }
       }
       catch(error){
@@ -82,7 +82,7 @@ const deleted = async (titre)=>{
          <div>
          <input type="number"  placeholder='utilisateurs_id' onChange={(e) => setDonnees({...donnees,utilisateurs_id:e.target.value})}></input>
         <br/>
-        <input type="number"  placeholder='date_creation' onChange={(e) => setDonnees({...donnees,date_creation:e.target.value})}></input>
+        <input type="text"  placeholder='date_creation' onChange={(e) => setDonnees({...donnees,date_creation:e.target.value})}></input>
         <br/>
         <input type="text"  placeholder='Titre' onChange={(e) => setDonnees({...donnees,titre:e.target.value})}></input>
         <br/>
