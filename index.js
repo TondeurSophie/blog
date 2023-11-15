@@ -51,34 +51,32 @@ app.get('/article/:titre', async (req, res) => {
     }
 });
 
-app.post('/article', async (req, res) => {
-    const nouvelArticle = req.body;
+app.post('/article', async(req, res) => {
+    console.log("post",req);
     let conn;
-    try {
+    try{
+        console.log("Lancement de la connexion")
         conn = await pool.getConnection();
-        await conn.query(
-            'INSERT INTO articles (titre, theme, article, reponse) VALUES (?, ?, ?, ?);',
-            [nouvelArticle.titre, nouvelArticle.theme, nouvelArticle.article, nouvelArticle.reponse]
-        );
-        res.status(201).json({ message: 'Article added successfully' });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    } finally {
-        if (conn) conn.release();
+        console.log("Lancement de la requête")
+        const rows = await conn.query('insert into articles values (?,?,?,?,?)', [req.body.utilisateurs_id,req.body.titre,req.body.auteur,req.body.date_creation,req.body.texte]);
+        // console.log(rows);
+        res.status(200).json(rows.affectedRows);
     }
-});
+    catch(err){
+        console.log(err);
+    }
+})
 
 app.put('/article/:titre', async (req, res) => {
     const titre = req.params.titre;
-    const { theme, article, reponse } = req.body;
+    const { utilisateurs_id, auteur, date_creation, texte } = req.body;
 
     let conn;
     try {
         conn = await pool.getConnection();
         await conn.query(
-            'UPDATE articles SET theme = ?, article = ?, reponse = ? WHERE titre = ?;',
-            [theme, article, reponse, titre]
+            'UPDATE articles SET utilisateurs_id = ?, auteur = ?, date_creation = ?, texte = ? WHERE titre = ?;',
+            [utilisateurs_id, auteur, date_creation, texte, titre]
         );
         res.status(200).json({ message: 'Article updated successfully' });
     } catch (err) {
