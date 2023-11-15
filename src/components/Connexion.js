@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../App.css'
 
+
 function Connexion() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,7 +11,7 @@ function Connexion() {
   };
 
   return (
-    
+    <>
     <div className='formulaire'>
     <center>
       <h2>Connexion</h2>
@@ -36,6 +37,7 @@ function Connexion() {
       </center>
     </div>
     
+    </>
   );
 }
 

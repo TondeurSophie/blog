@@ -44,7 +44,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 23%;
+  margin-top: 23%;
+  margin-left: 23%;
+  margin-right: 23%;
+  margin-bottom:10px;
 }
 
 .header{
@@ -63,4 +66,12 @@
   background-color: #5cb063;
   border-radius: 10%;
   color:rgb(222, 206, 206);
+}
+
+.image{
+  height: 50%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

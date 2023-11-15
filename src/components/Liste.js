@@ -6,6 +6,13 @@ export default function Liste() {
    // Pour gérer l'affichage
    const [affichage, setAffichage] = useState(false);
  
+   const [donnees, setDonnees] = useState({
+    utilisateurs_id:null,
+    titre:null,
+    auteur:null,
+    date_creation:null,
+    texte:null
+});
  
    const recup = async ()=>{
      //Chargement BDD
@@ -19,7 +26,35 @@ export default function Liste() {
        .catch(error => console.error(error));
    };
  
- 
+   //ajout article
+   const ajout = async ()=>{
+    try {
+      console.log(donnees)
+    const reponse = await fetch(`http://localhost:3008/article`, 
+    {method: "POST" ,body: JSON.stringify(donnees)})
+      if(reponse.status === 200){
+        // window.location.reload();
+      }
+    }
+    catch(error){
+      console.error(error);
+    }
+} 
+
+//supp article
+const deleted = async (titre)=>{
+      try {
+      const reponse = await fetch(`http://localhost:3008/article/${titre}`, 
+      {method: "DELETE"})
+        if(reponse.status === 200){
+          console.log(titre);
+          //window.location.reload();
+        }
+      }
+      catch(error){
+        console.error(error);
+      }
+  } 
  
  
  
@@ -40,9 +75,23 @@ export default function Liste() {
                <p>Auteur : {articles.auteur}</p>
                <p>Titre : {articles.titre}</p>
                <p> {articles.texte}</p>
+               <button onClick={()=> deleted(articles.titre)}>Supprimer</button>
              </fieldset>
            </div>
          )) : <p>Chargement ...</p>}
+         <div>
+         <input type="number"  placeholder='utilisateurs_id' onChange={(e) => setDonnees({...donnees,utilisateurs_id:e.target.value})}></input>
+        <br/>
+        <input type="number"  placeholder='date_creation' onChange={(e) => setDonnees({...donnees,date_creation:e.target.value})}></input>
+        <br/>
+        <input type="text"  placeholder='Titre' onChange={(e) => setDonnees({...donnees,titre:e.target.value})}></input>
+        <br/>
+        <input type="text"  placeholder='Auteur' onChange={(e) => setDonnees({...donnees,auteur:e.target.value})}></input>
+        <br/>
+        <input type="text"  placeholder='Texte' onChange={(e) => setDonnees({...donnees,texte:e.target.value})}></input>
+        <br/>
+        <button onClick={() => ajout()}>Ajouter</button>
+      </div>
        
          <br/><br/>
      </div>
