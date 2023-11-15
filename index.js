@@ -9,13 +9,14 @@ const pool = mariadb.createPool({
     user:process.env.DB_USER,
     password:process.env.DB_PWD,
 });
+const article = [];
 app.get('/articles',async(req,res)=>{
     let conn;
     try{
         console.log("lancement de la connexion")
         conn = await pool.getConnection();
         console.log("lancement de la requête")
-        const rows = await conn.query('Select * from question;');
+        const rows = await conn.query('Select * from articles;');
         console.log(rows);
         res.status(200).json(rows)
     }
