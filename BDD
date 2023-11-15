@@ -1,0 +1,20 @@
+BDD 
+create database blog;
+use blog;
+create table if not exists utilisateurs (
+    -> id integer primary key auto_increment,
+    -> nom varchar(50),
+    -> email varchar(50),
+    -> mdp varchar(30)
+    -> );
+create table if not exists articles (
+    -> utilisateurs_id int(11),
+    -> foreign key (utilisateurs_id) references utilisateurs (id),
+    -> titre varchar(100) primary key not null,
+    -> auteur varchar(50),
+    -> date_creation datetime);
+INSERT INTO utilisateurs values (1,"sophie","s.tondeur@test.test","mdp");
+INSERT INTO utilisateurs values (2,"morgane","morgane@test.test","mdp");
+insert into articles values (1,"Disney","sophie",12/02/2013,"Le parc d'attraction est super");
+insert into articles values (1,"Terminator","sophie",10/12/2015,"Le film est de bonne qualité");
+insert into articles values (2,"Chevaux","morgane",10/12/2010,"Les chevaux c'est fantastiques !");
