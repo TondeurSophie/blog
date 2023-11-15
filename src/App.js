@@ -6,16 +6,19 @@ import Connexion from './components/Connexion.js';
 function App() {
   return (
     <div>
-    <Link to="/">Accueil</Link>
-      <Link to="/liste">Liste</Link>
-      <Link to="/connexion">Connexion</Link>
-
+      <div className='header'>
+        <Link className="button" to="/">Accueil</Link>
+        <Link className="button" to="/liste">Liste</Link>
+        <Link className="button" to="/connexion">Connexion</Link>
+      </div>
+      <center><h1 className='titre'>Filmox</h1></center>
     <Routes>     
         {/* <Route exact path="/" component={<Accueil/>} /> */}
         <Route path="/"           element={<Accueil/>}/>
         <Route path="/liste"      element={<Liste/>} />
         <Route path="/connexion"  element={<Connexion/>} />
     </Routes>
+    
     </div>
   );
   

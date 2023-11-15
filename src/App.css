@@ -44,4 +44,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 23%;
+}
+
+.header{
+  background-color: beige;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.titre{
+  background-color: beige;
+  margin:0%;
+}
+.button{
+  margin-left: 10%;
+  margin-top: 5px;
+  background-color: #5cb063;
+  border-radius: 10%;
+  color:rgb(222, 206, 206);
 }
