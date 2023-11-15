@@ -49,32 +49,31 @@ app.get('/articles', async(req,res) => {
     }
 })
 
-app.get('/article/:id', (req,res)=>{
-    const id = parseInt(req.params.id)
-    const larticle = article.find(article=> article.id === id)
-    res.status(200).json(larticle)
-})
+app.get('/article/:titre', (req, res) => {
+    const titre = req.params.titre; // Utilisez le bon nom de paramètre
+    const larticle = article.find(article => article.titre === titre);
+    res.status(200).json(larticle);
+});
 
 app.post('/article', (req,res)=>{
     article.push(req.body)
     res.status(200).json(article)
 })
 
-app.put('/article/:titre', (req,res)=>{
-    const id = parseInt(req.params.id)
-    let larticle = article.find(article=> article.titre === id)
-    larticle.theme=req.body.theme,
-    larticle.article=req.body.article,
-    larticle.reponse=req.body.reponse,
-    res.status(200).json(larticle)
-})
+app.put('/article/:titre', (req, res) => {
+    const titre = req.params.titre;
+    let larticle = article.find(article => article.titre === titre);
+    larticle.theme = req.body.theme;
+    larticle.article = req.body.article;
+    larticle.reponse = req.body.reponse;
+    res.status(200).json(larticle);})
 
-app.delete('/article/:titre', (req,res)=>{
-    const id = parseInt(req.params.id)
-    let larticle = article.find(article=> article.titre === id)
-    article.splice(article.indexOf(larticle),1)
-    res.status(200).json(article)
-})
+    app.delete('/article/:titre', (req, res) => {
+        const titre = req.params.titre;
+        let larticle = article.find(article => article.titre === titre);
+        article.splice(article.indexOf(larticle), 1);
+        res.status(200).json(article);
+    });
 
 app.listen(8000, () => {
     console.log('Server started on port 8000');
