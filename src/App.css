@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.formulaire{
+  background-color: rgba(75, 178, 178, 0.684);
+  height: 25%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
