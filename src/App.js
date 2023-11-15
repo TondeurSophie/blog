@@ -11,9 +11,10 @@ function App() {
       <Link to="/connexion">Connexion</Link>
 
     <Routes>     
-        <Route exact path="/" component={<Accueil/>} />
-        <Route path="/liste" component={<Liste/>} />
-        <Route path="/connexion" component={<Connexion/>} />
+        {/* <Route exact path="/" component={<Accueil/>} /> */}
+        <Route path="/"           element={<Accueil/>}/>
+        <Route path="/liste"      element={<Liste/>} />
+        <Route path="/connexion"  element={<Connexion/>} />
     </Routes>
     </div>
   );
