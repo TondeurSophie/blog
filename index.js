@@ -185,6 +185,41 @@ app.post('/utilisateurs', async(req, res) => {
     .catch((error) => res.status(500).json(error))
 })
 
+//vérification email dans bdd
+app.post('/utilisateursBDD', async(req,res) => {
+    const email = req.body.email;
+    const mdp = req.body.mdp;
+    let conn;
+    try{
+        console.log("Lancement de la connexion")
+        conn = await pool.getConnection();
+        console.log("Lancement de la requête")
+        const rows = await conn.query('select * from utilisateurs where email = ? ', [email]);
+        console.log(rows)
+        if (rows.length > 0) {
+            const hash = rows[0].mdp;
+            //compare mdp avec hash
+            const match = await bcrypt.compare(mdp,hash);
+            console.log(match);
+            if (match){
+                console.log("Vous êtes connecté")
+                res.status(200).json({id:rows[0].id});
+            }else{
+                console.log("le mdp de correspond pas")
+            }
+            
+        } else {
+            res.status(404).json({ error: 'Article not found' });
+        }
+        console.log(rows);
+        res.status(200).json(rows);
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
+
 
 app.listen(3008, () => { //ouverture du serveur sur port 3008
     console.log("Serveur à l'écoute") //affiche message dans la console
