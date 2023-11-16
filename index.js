@@ -72,12 +72,13 @@ app.post('/article', async(req, res) => {
 // //supprimer article
 app.delete('/article/:titre', async(req, res) => {
     const id = req.params.titre
+    
     let conn;
     try{
         console.log("Lancement de la connexion")
         conn = await pool.getConnection();
         console.log("Lancement de la requête")
-        const supp = await conn.query('delete from `articles` where `titre` = ?', [id]);
+        const supp = await conn.query('delete from `articles` where `titre` = ? ', [id]);
         console.log(supp);
         res.status(200).json(supp.affectedRows);
     }
@@ -107,6 +108,28 @@ app.get('/article/:titre', async (req, res) => {
     }
 });
 
+//mes articles
+app.get('/article_mes/:id', async (req, res) => {
+    const id_conn = req.params.id;
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query('SELECT * FROM articles WHERE utilisateurs_id = ?;', [id_conn]);
+        console.log("connexion",rows)
+        if (rows.length > 0) {
+            res.status(200).json(rows);
+            console.log(rows)
+        } else {
+            res.status(404).json({ error: 'Article not found' });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (conn) conn.release();
+    }
+})
+
 
 //modification article
 app.put('/article/:titre', async (req, res) => {
@@ -117,8 +140,10 @@ app.put('/article/:titre', async (req, res) => {
     try {
         conn = await pool.getConnection();
         await conn.query(
-            'UPDATE articles SET utilisateurs_id = ?, auteur = ?, date_creation = ?, texte = ? WHERE titre = ?;',
-            [utilisateurs_id, auteur, date_creation, texte, titre]
+            // 'UPDATE articles SET utilisateurs_id = ?, auteur = ?, date_creation = ?, texte = ? WHERE titre = ?;',
+            // [utilisateurs_id, auteur, date_creation, texte, titre]
+            'UPDATE articles SET texte = ? WHERE titre = ?;',
+            [texte, titre]
         );
         res.status(200).json({ message: 'Article updated successfully' });
     } catch (err) {
@@ -129,24 +154,6 @@ app.put('/article/:titre', async (req, res) => {
     }
 });
 
-// app.get('/article/:titre', async (req, res) => {
-//     const titre = req.params.titre;
-//     let conn;
-//     try {
-//         conn = await pool.getConnection();
-//         const rows = await conn.query('SELECT titre FROM articles ');
-//         // if (rows.length > 0) {
-//         //     res.status(200).json(rows[0]);
-//         // } else {
-//         //     res.status(404).json({ error: 'Article not found' });
-//         // }
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     } finally {
-//         if (conn) conn.release();
-//     }
-// });
 
 
 //______________________________________________________
