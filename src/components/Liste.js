@@ -5,6 +5,8 @@ export default function Liste() {
    const [blog, setblog] = useState([]); 
    // Pour gérer l'affichage
    const [affichage, setAffichage] = useState(false);
+
+  const [Resultat, setResultat] = useState([]);
  
    const [donnees, setDonnees] = useState({
     utilisateurs_id:null,
@@ -56,17 +58,57 @@ const deleted = async (titre)=>{
       }
   } 
  
+  const [recherche, setRecherche] = useState({
+    titre:""
+}); 
+// console.log('recherche',recherche)
+const [titre, setTitre] = useState([]);
+
+const rechercher = async ()=>{
+    //Chargement BDD
+    await fetch(`http://localhost:3008/articles/titre`, 
+    {method: "GET"})
+    .then(reponse => reponse.json()).then(data => {
+        setTitre(data);
+        setAffichage(true);
+    })
+    .catch(error => console.error(error));
+};
+
+useEffect(() => {
+    recup()
+    rechercher()
+},[])
+
+const recupRecherche = async ()=>{
+    // console.log(recherche.titre)
+    await fetch(`http://localhost:3008/article/${recherche.titre}`, 
+    {method: "GET"})
+    .then(reponse => reponse.json()).then(data => {
+        console.log(data)
+        setblog(data);
+        setAffichage(true);
+        // console.log(data);
+      })
+      .catch(error => console.error(error));
+  };
+// console.log('titre',titre);
  
- 
-   useEffect(() => {
-     recup()
-   },[])
- 
-   
+
+
+
  
    return (
      <div>
-        <center><h1>Liste de tous les articles</h1></center>
+        <div>
+        
+      <input type="search"   placeholder='recherche' onChange={(e) => setRecherche({...recherche,titre:e.target.value})}></input>
+        <button onClick={()=> recupRecherche()}>Rechercher</button>
+        <br/>        
+      </div>
+        <center>
+            <h1>Liste de tous les articles</h1>
+            </center>
        {affichage ? 
          blog.map(articles => (
            <div>
@@ -80,7 +122,7 @@ const deleted = async (titre)=>{
            </div>
          )) : <p>Chargement ...</p>}
          <div>
-         <input type="number"  placeholder='utilisateurs_id' onChange={(e) => setDonnees({...donnees,utilisateurs_id:e.target.value})}></input>
+        <input type="number"  placeholder='utilisateurs_id' onChange={(e) => setDonnees({...donnees,utilisateurs_id:e.target.value})}></input>
         <br/>
         <input type="text"  placeholder='date_creation' onChange={(e) => setDonnees({...donnees,date_creation:e.target.value})}></input>
         <br/>
@@ -94,6 +136,8 @@ const deleted = async (titre)=>{
       </div>
        
          <br/><br/>
+
+         
      </div>
    )
   
