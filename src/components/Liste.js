@@ -9,7 +9,7 @@ export default function Liste() {
   const [Resultat, setResultat] = useState([]);
  
    const [donnees, setDonnees] = useState({
-    utilisateurs_id:null,
+    utilisateurs_id:localStorage.getItem("key"),
     titre:null,
     auteur:null,
     date_creation:null,
