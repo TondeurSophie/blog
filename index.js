@@ -34,7 +34,25 @@ app.get('/articles', async(req,res) => {
     }
 })
 
-// //ajout article
+//affichage de tous les titres
+app.get('/articles/titre', async(req,res) => {
+    let conn;
+    try{
+        console.log("Lancement de la connexion")
+        conn = await pool.getConnection();
+        console.log("Lancement de la requête")
+        const rows = await conn.query('select titre from articles');
+        console.log(rows);
+        res.status(200).json(rows);
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
+
+
+//ajout article
 app.post('/article', async(req, res) => {
     console.log("post",req);
     let conn;
@@ -53,7 +71,7 @@ app.post('/article', async(req, res) => {
 
 // //supprimer article
 app.delete('/article/:titre', async(req, res) => {
-    const id = parseInt(req.params.id)
+    const id = req.params.titre
     let conn;
     try{
         console.log("Lancement de la connexion")
@@ -61,37 +79,110 @@ app.delete('/article/:titre', async(req, res) => {
         console.log("Lancement de la requête")
         const supp = await conn.query('delete from `articles` where `titre` = ?', [id]);
         console.log(supp);
-        res.status(200).json(supp);
+        res.status(200).json(supp.affectedRows);
     }
     catch(err){
         console.log(err);
     }
 })
 
-// //afficher les articles en fonction utilisateur_id
-// //exemple : http://localhost:3000/question/1
-// app.get('/articleID', (req, res) => {
-//     const id = parseInt(req.params.id)
-//     const larticle = articles.find(articles => articles.utilisateurs_id === id)
-//     res.status(200).json(larticle)
-// })
+//affichage de l'article avec le titre = ...
+app.get('/article/:titre', async (req, res) => {
+    const titre = req.params.titre;
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query('SELECT * FROM articles WHERE titre = ?;', [titre]);
+        if (rows.length > 0) {
+            res.status(200).json(rows);
+            console.log(rows)
+        } else {
+            res.status(404).json({ error: 'Article not found' });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (conn) conn.release();
+    }
+});
 
 
-// //ajout utilisateur
-app.post('/utilisateur', async(req, res) => {
-    console.log("post",req);
+//modification article
+app.put('/article/:titre', async (req, res) => {
+    const titre = req.params.titre;
+    const { utilisateurs_id, auteur, date_creation, texte } = req.body;
+
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        await conn.query(
+            'UPDATE articles SET utilisateurs_id = ?, auteur = ?, date_creation = ?, texte = ? WHERE titre = ?;',
+            [utilisateurs_id, auteur, date_creation, texte, titre]
+        );
+        res.status(200).json({ message: 'Article updated successfully' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (conn) conn.release();
+    }
+});
+
+// app.get('/article/:titre', async (req, res) => {
+//     const titre = req.params.titre;
+//     let conn;
+//     try {
+//         conn = await pool.getConnection();
+//         const rows = await conn.query('SELECT titre FROM articles ');
+//         // if (rows.length > 0) {
+//         //     res.status(200).json(rows[0]);
+//         // } else {
+//         //     res.status(404).json({ error: 'Article not found' });
+//         // }
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     } finally {
+//         if (conn) conn.release();
+//     }
+// });
+
+
+//______________________________________________________
+//Utilisateur
+
+app.get('/utilisateurs', async(req,res) => {
     let conn;
     try{
         console.log("Lancement de la connexion")
         conn = await pool.getConnection();
         console.log("Lancement de la requête")
-        const rows = await conn.query('insert into utilisateurs values (?,?,?,?)', [req.body.id,req.body.nom,req.body.email,req.body.mdp]);
-        // console.log(rows);
-        res.status(200).json(rows.affectedRows);
+        const rows = await conn.query('select * from utilisateurs');
+        console.log(rows);
+        res.status(200).json(rows);
     }
     catch(err){
         console.log(err);
     }
+})
+
+// //ajout utilisateur
+app.post('/utilisateurs', async(req, res) => {
+    // console.log("post",req);
+    let conn;
+    bcrypt.hash(req.body.mdp,10)
+        .then(async (hash) => {
+            console.log("Lancement de la connexion")
+            console.log(req.body)
+            conn = await pool.getConnection();
+            console.log("Lancement de la requête")
+            const rows = await conn.query('insert into utilisateurs (nom, email, mdp) values (?,?,?)', [req.body.nom,req.body.email,hash]);
+            console.log(rows.affectedRows);
+            res.status(200).json(rows.affectedRows);
+        })
+    
+    .catch((error) => res.status(500).json(error))
 })
 
 
